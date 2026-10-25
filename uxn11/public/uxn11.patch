@@ -1,0 +1,40 @@
+diff --git a/etc/alt/uxncli11.c b/etc/alt/uxncli11.c
+index 1e29749..390f4db 100644
+--- a/etc/alt/uxncli11.c
++++ b/etc/alt/uxncli11.c
+@@ -385,8 +385,8 @@ typedef struct {
+ 	} state;
+ } UxnFile;
+ 
++static Uint8 dirbuf[0x10000];
+ static UxnFile ufs[2];
+-static Uint8 dirbuf[0x10000], *_dirbuf = dirbuf;
+ static unsigned int rL1, rL2;
+ 
+ static void
+@@ -460,6 +460,7 @@ static unsigned int
+ put_fdir(Uint8 *dest, unsigned int len, const char *filepath, DIR *dir)
+ {
+ 	unsigned int i;
++	Uint8 *_dirbuf;
+ 	struct dirent *de = readdir(dir);
+ 	for(_dirbuf = dirbuf; de != NULL; de = readdir(dir)) {
+ 		const char *name = de->d_name;
+@@ -543,8 +544,6 @@ file_read(unsigned int id, Uint16 addr, unsigned int len)
+ 		file_reset(id);
+ 		if((ufs[id].dir = opendir(ufs[id].filepath)) != NULL)
+ 			ufs[id].state = DIR_READ;
+-		else if((ufs[id].f = fopen(ufs[id].filepath, "rb")) != NULL)
+-			ufs[id].state = FILE_READ;
+ 	}
+ 	if(ufs[id].state == FILE_READ)
+ 		return fread(dest, 1, len, ufs[id].f);
+@@ -667,7 +666,7 @@ emu_deo(const Uint8 port, const Uint8 value)
+ 	case 0x19: fputc(dev[0x19], stderr), fflush(stderr); break;
+ 	case 0x1a: fprintf(stderr, "%02x", dev[0x1a]); break;
+ 	case 0x1b: fprintf(stderr, "%02x", dev[0x1b]); break;
+-	case 0x1f: start_fork(); break;
++	case 0x1f: break;
+ 	/* File 1 */
+ 	case 0xab: rL1 = PEEK2(&dev[0xaa]); break;
+ 	case 0xa5: file_success(0xa2, file_stat(0, PEEK2(&dev[0xa4]), rL1)); break;

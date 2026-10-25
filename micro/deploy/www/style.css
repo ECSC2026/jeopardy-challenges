@@ -1,0 +1,16 @@
+body {
+  margin: 4rem auto;
+  max-width: 40rem;
+  padding: 0 1rem;
+  font-family: monospace;
+  line-height: 1.5;
+  color: #ddd;
+  background: #16161a;
+}
+
+a { color: #7bd; }
+
+h1 { margin-bottom: 0; font-weight: normal; letter-spacing: 0.1em; }
+h2 { font-weight: normal; font-size: 1rem; color: #9a9; }
+
+.sub { margin-top: 0.2rem; color: #888; }

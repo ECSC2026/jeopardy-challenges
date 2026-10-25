@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Haml Sandbox</title>
+    <style>
+      body {
+        background: #000;
+        color: #f4f4f5;
+        font: 16px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        margin: 2rem auto;
+        max-width: 52rem;
+        padding: 0 1rem;
+      }
+
+      textarea,
+      #preview {
+        border: 1px solid #3f3f46;
+        box-sizing: border-box;
+        margin: 1rem 0;
+        padding: .75rem;
+        width: 100%;
+      }
+
+      textarea {
+        background: #000;
+        color: inherit;
+        font: inherit;
+        height: 14rem;
+      }
+
+      #preview {
+        min-height: 16rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Haml Sandbox</h1>
+    <p>Read <code>/flag.txt</code>.</p>
+    <p>Blocked after lowercasing: <code>=</code> <code>-</code> <code>~</code> <code>%</code> <code>{</code> <code>[</code> <code>#{</code> <code>:ruby</code> <code>:erb</code></p>
+    <form id="render-form" action="/render" method="post">
+      <textarea name="template" autofocus spellcheck="false"></textarea>
+      <button type="submit">Render</button>
+    </form>
+    <div id="preview"></div>
+    <script>
+      const form = document.getElementById("render-form");
+      const preview = document.getElementById("preview");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form)
+        });
+        preview.innerHTML = await response.text();
+      });
+    </script>
+  </body>
+</html>

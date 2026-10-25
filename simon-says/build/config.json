@@ -1,0 +1,12 @@
+{
+    "build_seed": "RJf24z4vdUcLlJGQ",
+    "overall_obfuscation": 100,
+    "enable_obfuscation": 1,
+    "flatten": [
+        {
+            "name": ".*",
+            "seed": "3ccadbaeba5cf97b3ccadbaeba5cf97b",
+            "split_level": 1
+        }
+    ]
+}

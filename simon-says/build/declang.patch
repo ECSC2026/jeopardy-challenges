@@ -1,0 +1,111 @@
+diff --git a/AntiHackOSS/src/Flattening.cpp b/AntiHackOSS/src/Flattening.cpp
+index 8ff8e6b488f2..5cfc91e1386f 100644
+--- a/AntiHackOSS/src/Flattening.cpp
++++ b/AntiHackOSS/src/Flattening.cpp
+@@ -373,7 +373,7 @@ void Flattening::fixStack(Function *f)
+   // Demote escaped instructions
+   //NumRegsDemoted += WorkList.size();
+   for (Instruction *ilb : WorkList) {
+-    DemoteRegToStack(*ilb, false, AllocaInsertionPoint);
++    DemoteRegToStack(*ilb, false, AllocaInsertionPoint->getIterator());
+   }
+ 
+   WorkList.clear();
+@@ -388,7 +388,8 @@ void Flattening::fixStack(Function *f)
+   // Demote phi nodes
+   //NumPhisDemoted += WorkList.size();
+   for (Instruction *ilb : WorkList)
+-    DemotePHIToStack(cast<PHINode>(ilb), AllocaInsertionPoint);
++    DemotePHIToStack(cast<PHINode>(ilb),
++                     AllocaInsertionPoint->getIterator());
+ }
+ 
+ bool Flattening::valueEscapes(Instruction *Inst) {
+diff --git a/AntiHackOSS/src/Utils.cpp b/AntiHackOSS/src/Utils.cpp
+index 66bf094b8db9..3fc0834c489f 100644
+--- a/AntiHackOSS/src/Utils.cpp
++++ b/AntiHackOSS/src/Utils.cpp
+@@ -54,11 +54,13 @@ void fixStack(Function *f) {
+       }
+     }
+     for (unsigned int i = 0; i != tmpReg.size(); ++i) {
+-      DemoteRegToStack(*tmpReg.at(i), f->begin()->getTerminator());
++      DemoteRegToStack(*tmpReg.at(i), false,
++                       f->begin()->getTerminator()->getIterator());
+     }
+ 
+     for (unsigned int i = 0; i != tmpPhi.size(); ++i) {
+-      DemotePHIToStack(tmpPhi.at(i), f->begin()->getTerminator());
++      DemotePHIToStack(tmpPhi.at(i),
++                       f->begin()->getTerminator()->getIterator());
+     }
+ 
+   } while (tmpReg.size() != 0 || tmpPhi.size() != 0);
+diff --git a/AntiHackOSS/tools/release.sh b/AntiHackOSS/tools/release.sh
+index 1c5832d8bccb..41b41b7d2511 100644
+--- a/AntiHackOSS/tools/release.sh
++++ b/AntiHackOSS/tools/release.sh
+@@ -7,7 +7,7 @@ fi
+ 
+ #copy declang 
+ pushd $(dirname $0) > /dev/null
+-cd ../
++cd ../../
+ 
+ rm -rf ./Release/
+ rm -rf ./Release-$1/
+@@ -35,7 +35,7 @@ popd > /dev/null
+ 
+ #copy include files
+ pushd $(dirname $0) > /dev/null
+-cd ../
++cd ../../
+ mkdir -p ./Release/compiler/include/llvm/
+ mkdir -p ./Release/compiler/include/c++/v1/
+ 
+@@ -45,20 +45,20 @@ cp -r build/include/* ./Release/compiler/include/
+ popd > /dev/null
+ 
+ pushd $(dirname $0) > /dev/null
+-cd ../
++cd ../../
+ 
+ mkdir -p ./Release/gen_config/bin/macOS/Intel
+ mkdir -p ./Release/gen_config/bin/macOS/AppleSilicon
+ mkdir -p ./Release/gen_config/bin/Windows
+ mkdir -p ./Release/gen_config/bin/Linux
+ 
+-cp -v tools/config/gen_config_mac_intel ./Release/gen_config/bin/macOS/Intel/gen_config
+-cp -v tools/config/gen_config_mac_applesilicon ./Release/gen_config/bin/macOS/AppleSilicon/gen_config
+-cp -v tools/config/gen_config_linux ./Release//gen_config/bin/Linux/gen_config
+-cp -v tools/config/gen_config_windows.exe ./Release/gen_config/bin/Windows/gen_config.exe
+-cp -v tools/config/gen_config.sh ./Release/gen_config.sh
++cp -v AntiHack/tools/config/gen_config_mac_intel ./Release/gen_config/bin/macOS/Intel/gen_config
++cp -v AntiHack/tools/config/gen_config_mac_applesilicon ./Release/gen_config/bin/macOS/AppleSilicon/gen_config
++cp -v AntiHack/tools/config/gen_config_linux ./Release/gen_config/bin/Linux/gen_config
++cp -v AntiHack/tools/config/gen_config_windows.exe ./Release/gen_config/bin/Windows/gen_config.exe
++cp -v AntiHack/tools/config/gen_config.sh ./Release/gen_config.sh
+ 
+-cp -v tools/config/config.pre.json ./Release/config.pre.json
++cp -v AntiHack/tools/config/config.pre.json ./Release/config.pre.json
+ 
+ mkdir -p ./Release/script/
+ cp -v script/*setup.sh ./Release/script/
+@@ -67,14 +67,14 @@ popd > /dev/null
+ 
+ # copy license
+ pushd $(dirname $0) > /dev/null
+-cd ..
++cd ../../
+ cp ./AntiHackOSS/LICENSE-DeClang ./Release/
+ cp ./AntiHackOSS/LICENSE-ollvm ./Release/
+-cp ./LICENSE.txt ./Release/
++cp ./LICENSE.TXT ./Release/
+ popd > /dev/null
+ 
+ pushd $(dirname $0) > /dev/null
+-cd ../
++cd ../../
+ 
+ mv Release Release-$1
+ popd > /dev/null

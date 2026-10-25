@@ -1,0 +1,11 @@
+# Run with `just e2e`.
+
+[project]
+name = "pqsb-e2e"
+version = "1.0.0"
+description = "Browser tests for the PQ Swiss Bank frontend."
+requires-python = ">=3.10"
+dependencies = ["pytest>=8.0", "pytest-playwright>=0.5"]
+
+[tool.uv]
+package = false

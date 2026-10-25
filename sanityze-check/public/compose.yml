@@ -1,0 +1,27 @@
+name: sanityze-check
+
+services:
+  bot:
+    build: ./bot
+    environment:
+      FLAG: "ECSC{fakeflag}"
+      CHALLENGE_URL: "http://127.0.0.1:8080"
+    network_mode: "service:challenge"
+    depends_on:
+      - challenge
+    restart: unless-stopped
+    read_only: true
+    cap_drop:
+      - all
+    cap_add:
+      - CAP_SETGID # Needed for su-exec
+      - CAP_SETUID # Needed for su-exec
+    tmpfs:
+      - /tmp:mode=1733,exec
+  challenge:
+    build: ./challenge
+    ports:
+      - "${BOT_PORT:-1337}:55555"
+      - "${CHALLENGE_PORT:-8080}:8080"
+    restart: unless-stopped
+    read_only: true

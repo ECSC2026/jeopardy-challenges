@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bond Issuance &middot; PQ Swiss Bank</title>
+<link rel="icon" href="/static/favicon.svg">
+<link rel="stylesheet" href="/static/pqsb.css">
+</head>
+<body>
+<div id="chrome"></div>
+
+<div class="status-bar">
+  <span>Bond Issuance</span>
+  <span class="dim">Key <span id="keyId">&mdash;</span> &middot; <span id="clock">&mdash;</span>
+    &middot; <span id="statusLine">Nothing signed</span></span>
+</div>
+
+<section class="split">
+  <div class="pane-paper">
+    <h1>Issue a bearer bond</h1>
+
+    <label class="field">
+      <span class="label">Principal</span>
+      <div class="money">
+        <select class="select" id="currency"><option value="CHF">CHF</option></select>
+        <input class="input" id="amount" type="text" inputmode="numeric"
+               autocomplete="off" placeholder="250000">
+      </div>
+    </label>
+
+    <div class="frame">
+      <div class="stat-grid">
+        <div class="stat"><span class="label">Principal</span><span class="figure" id="principal">&mdash;</span></div>
+        <div class="stat"><span class="label">Issuance fee</span><span class="figure" id="fee">&mdash;</span></div>
+        <div class="stat"><span class="label">Total drawn</span><span class="figure" id="drawn">&mdash;</span></div>
+        <div class="stat"><span class="label">Balance after</span><span class="figure" id="after">&mdash;</span></div>
+      </div>
+    </div>
+
+    <div class="spine-accent hidden" id="notice" style="font-size:22px; line-height:1.5"></div>
+
+    <div class="row">
+      <button class="btn" type="button" id="sign" disabled>Issue Bond &rarr;</button>
+      <span class="label">Downloads a .bond file</span>
+    </div>
+  </div>
+
+  <div class="pane-ink on-ink">
+    <div class="meta" style="display:flex; justify-content:space-between; gap:22px; flex-wrap:wrap">
+      <span>Signed object</span>
+      <span style="color:var(--paper-68)" id="objectStatus">Nothing signed</span>
+    </div>
+
+    <div id="signed" class="hidden" style="display:flex; flex-direction:column; gap:22px">
+      <pre class="payload" id="payload"></pre>
+      <div class="row">
+        <button class="btn" type="button" id="again">Download again</button>
+        <a href="/redemption" class="meta">Go to redemption &rarr;</a>
+      </div>
+      <p class="meta-loose" style="color:var(--paper-62)">This file is the bond. We keep no copy and no register.</p>
+    </div>
+
+    <div id="unsigned">
+    </div>
+  </div>
+</section>
+
+<div id="foot"></div>
+
+<script src="/static/pqsb.js"></script>
+<script src="/static/issuance.js"></script>
+</body>
+</html>

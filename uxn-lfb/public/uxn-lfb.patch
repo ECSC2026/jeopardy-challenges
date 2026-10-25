@@ -1,0 +1,179 @@
+diff --git a/uxn-lfb.c b/uxn-lfb.c
+index f57921e..0a7d2bc 100644
+--- a/uxn-lfb.c
++++ b/uxn-lfb.c
+@@ -451,145 +451,17 @@ static void sigusr_handler(int signal) {
+ }
+ 
+ static void init(void) {
+-    struct vt_stat vts;
+-    if (ioctl(0, VT_GETSTATE, &vts)) {
+-        log_failure("failed to get VT state", errno);
+-        exit(EXIT_FAILURE);
+-    }
+-
+-    uxn_vt_num = vts.v_active;
+-
+-    tty_path = ttyname(0);
+-    if (debug_log)
+-        printf("controlling terminal: %s\n", tty_path);
+-    tty = open(tty_path, O_RDWR);
+-    if (tty < 0)
+-        fail("couldn't open tty", errno);
+-
+-    struct termios t;
+-    if (tcgetattr(STDIN_FILENO, &t))
+-        fail("couldn't get terminal attrs", errno);
+-
+-    struct vt_mode vtm;
+-    if(ioctl(0, VT_GETMODE, &vtm)) {
+-        log_failure("getting vt mode failed", errno);
+-        exit(EXIT_FAILURE);
+-    }
+-
+-    find_event_devices();
+-    init_event_devices();
+-
+-    if(ioctl(0, KDGKBMODE, &prev_kbmode)) {
+-        log_failure("getting kb mode failed", errno);
+-        exit(EXIT_FAILURE);
+-    }
+-
+-    fb_fd = open("/dev/fb0", O_RDWR);
+-    if (fb_fd < 0) {
+-        log_failure("failed to open framebuffer", errno);
+-        exit(EXIT_FAILURE);
+-    }
+-
+-    struct fb_fix_screeninfo finfo;
+-    if (ioctl(fb_fd, FBIOGET_FSCREENINFO, &finfo)) {
+-        log_failure("failed to get fix screen info", errno);
+-        exit(EXIT_FAILURE);
+-    }
+-
+-    struct fb_var_screeninfo vinfo;
+-    if (ioctl(fb_fd, FBIOGET_VSCREENINFO, &vinfo)) {
+-        log_failure("failed to get var screen info", errno);
+-        exit(EXIT_FAILURE);
+-    }
+-
+-    if (vinfo.grayscale == 1) {
+-        printf("grayscale color not supported\n");
+-        exit(EXIT_FAILURE);
+-    } else if (vinfo.grayscale > 1) {
+-        printf("FOURCC color not supported: %d (colorspace=%d)\n", vinfo.grayscale, vinfo.colorspace);
+-        exit(EXIT_FAILURE);
+-    } else if (vinfo.nonstd) {
+-        printf("non-standard pixel format not supported\n");
+-        exit(EXIT_FAILURE);
+-    } else if (vinfo.rotate) {
+-        printf("rotation not currently supported: %d\n", vinfo.rotate);
+-        exit(EXIT_FAILURE);
+-    }
+-
+-    fb_stride = finfo.line_length;
+-    fb_width = vinfo.xres;
+-    fb_height = vinfo.yres;
+-    fb_bpp = vinfo.bits_per_pixel;
++    fb_width = WIDTH;
++    fb_height = HEIGHT;
++    fb_bpp = 32;
+     fb_pixel_bytes = fb_bpp / 8;
++    fb_stride = fb_width * fb_pixel_bytes;
+     fb_memsize = fb_height * fb_stride;
+-    if (fb_height * fb_stride != finfo.smem_len) {
+-        printf("height (%d) * stride (%d) = %d != smem_len (%d)\n", fb_height, fb_stride, fb_memsize, finfo.smem_len);
+-        exit(EXIT_FAILURE);
+-    }
+-
+-    if (fb_bpp == 32) {
+-        if (vinfo.red.offset   == 16 && vinfo.red.length   == 8 &&
+-            vinfo.green.offset ==  8 && vinfo.green.length == 8 &&
+-            vinfo.blue.offset  ==  0 && vinfo.blue.length == 8) {
+-            fb_color_type = COLOR_TYPE_32_a8r8g8b8;
+-        }
+-    } else if (fb_bpp == 24) {
+-        if (vinfo.red.offset   == 16 && vinfo.red.length   == 8 &&
+-            vinfo.green.offset ==  8 && vinfo.green.length == 8 &&
+-            vinfo.blue.offset  ==  0 && vinfo.blue.length == 8) {
+-            fb_color_type = COLOR_TYPE_24_r8g8b8;
+-        }
+-    } else if (fb_bpp == 16) {
+-        if (vinfo.red.offset   == 11 && vinfo.red.length   == 5 &&
+-            vinfo.green.offset ==  5 && vinfo.green.length == 6 &&
+-            vinfo.blue.offset  ==  0 && vinfo.blue.length == 5) {
+-            fb_color_type = COLOR_TYPE_16_r5g6b5;
+-        }
+-    }
+-
+-    if (fb_color_type == 0) {
+-        printf("detected %d bits per pixel.\n", fb_bpp);
+-        printf("- red:    offset=%d length=%d msb_right=%d\n", vinfo.red.offset, vinfo.red.length, vinfo.red.msb_right);
+-        printf("- green:  offset=%d length=%d msb_right=%d\n", vinfo.green.offset, vinfo.green.length, vinfo.green.msb_right);
+-        printf("- blue:   offset=%d length=%d msb_right=%d\n", vinfo.blue.offset, vinfo.blue.length, vinfo.blue.msb_right);
+-        printf("- transp: offset=%d length=%d msb_right=%d\n", vinfo.transp.offset, vinfo.transp.length, vinfo.transp.msb_right);
+-        printf("unknown color type\n");
+-        exit(EXIT_FAILURE);
+-    }
+-
+-    prev_termios = t;
+-    t.c_lflag &= ~((tcflag_t) ECHO | ICANON);
+-    t.c_lflag |= O_NONBLOCK;
+-    t.c_cc[VMIN] = 1;
+-    if (tcsetattr(STDIN_FILENO, TCSANOW, &t)) {
+-        log_failure("couldn't disable terminal echo", errno);
+-        exit(EXIT_FAILURE);
+-    }
+-
+-    prev_vt_mode = vtm.mode;
+-    prev_vt_acqsig = vtm.acqsig;
+-    prev_vt_relsig = vtm.relsig;
+-
+-    vtm.mode = VT_PROCESS;
+-    vtm.acqsig = SIGUSR1;
+-    vtm.relsig = SIGUSR2;
+-    if(ioctl(0, VT_SETMODE, &vtm))
+-        fail("setting vt mode failed", errno);
+-
+-    if(ioctl(0, KDSKBMODE, K_OFF))
+-        fail("setting kb mode failed", errno);
+-
+-    if (ioctl(tty, KDSETMODE, KD_GRAPHICS))
+-        fail("setting graphics mode failed", errno);
+-
+-    fb_data = mmap(0, fb_memsize, PROT_READ | PROT_WRITE, MAP_SHARED, fb_fd, (off_t)0);
++    fb_color_type = COLOR_TYPE_32_a8r8g8b8;
++    fb_data = mmap(NULL, fb_memsize, PROT_READ | PROT_WRITE,
++        MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+     if (fb_data == MAP_FAILED)
+         fail("failed to memory-map framebuffer", errno);
+-
+-    /* saved_screen = (char*)malloc(fb_memsize); */
+-
+-    signal(SIGUSR1, sigusr_handler);
+-    signal(SIGUSR2, sigusr_handler);
+ }
+ 
+ char key_to_ascii(struct keyboard_dev *kbdev, struct input_event ev) {
+@@ -2059,7 +1931,6 @@ static const deo_handler deo_handlers[256] = {
+     [0x19] = console_deo_stderr,
+     [0x1a] = console_deo_hb,
+     [0x1b] = console_deo_lb,
+-    [0x1f] = console_deo_fork,
+     [0x21] = screen_deo_vector,
+     [0x23] = screen_deo_width,
+     [0x25] = screen_deo_height,
+@@ -2078,13 +1949,11 @@ static const deo_handler deo_handlers[256] = {
+     [0xa6] = filea_deo_delete,
+     [0xa9] = filea_deo_name,
+     [0xab] = filea_deo_length,
+-    [0xad] = filea_deo_read,
+     [0xaf] = filea_deo_write,
+     [0xb5] = fileb_deo_stat,
+     [0xb6] = fileb_deo_delete,
+     [0xb9] = fileb_deo_name,
+     [0xbb] = fileb_deo_length,
+-    [0xbd] = fileb_deo_read,
+     [0xbf] = fileb_deo_write};
+ 
+ static inline Uint8

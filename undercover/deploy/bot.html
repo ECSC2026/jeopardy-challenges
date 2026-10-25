@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Undercover Admin Bot</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0f1220; color: #e7e9f3; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .box { background: #191d31; padding: 28px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,.4); min-width: 440px; }
+    h1 { margin-top: 0; font-size: 20px; }
+    p { color: #9aa0bd; }
+    input { width: 100%; padding: 11px; box-sizing: border-box; border: 1px solid #333a5c; border-radius: 6px; margin: 10px 0; background: #0f1220; color: #e7e9f3; }
+    button { padding: 11px 20px; background: #5b7cfa; color: #fff; border: 0; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    button:disabled { background: #444; cursor: not-allowed; }
+    #result { display: block; margin-top: 12px; font-weight: 600; min-height: 1.2em; }
+    code { color: #9fd3ff; }
+    hr { border: 0; border-top: 1px solid #333a5c; margin: 20px 0 16px; }
+    .ca { color: #9aa0bd; font-size: 14px; margin: 0 0 10px; }
+    a.dl { display: inline-block; padding: 9px 16px; background: #232842; color: #cdd3f0; border: 1px solid #333a5c; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; }
+    a.dl:hover { background: #2a3050; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Undercover Admin Bot</h1>
+    <p>Submit a URL and the admin will open it.</p>
+    <input id="url" type="url" placeholder="https://example.com/…" pattern="^https?://">
+    <button id="submit">Send to admin</button>
+    <span id="result"></span>
+    <hr>
+    <p class="ca">The admin's browser trusts our corporate Root CA</p>
+    <a class="dl" href="/ca.crt" download>Download Root CA</a>
+  </div>
+  <script>
+    const btn = document.getElementById('submit');
+    const out = document.getElementById('result');
+    const inp = document.getElementById('url');
+    btn.onclick = async () => {
+      btn.disabled = true;
+      out.style.color = '#9aa0bd';
+      out.textContent = 'Processing ...';
+      try {
+        const r = await fetch('/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: inp.value }),
+        });
+        const data = await r.json();
+        out.style.color = data.error ? '#ff6b6b' : '#5bd98a';
+        out.textContent = data.error || 'Success: the admin visited your URL.';
+      } catch (e) {
+        out.style.color = '#ff6b6b';
+        out.textContent = 'Request failed';
+      } finally {
+        setTimeout(() => { btn.disabled = false; }, 10000);
+      }
+    };
+  </script>
+</body>
+</html>

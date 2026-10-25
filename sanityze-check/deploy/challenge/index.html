@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Sanity(ze) Check</title>
+    <link rel="stylesheet" href="main.css">
+    <script src="main.js"></script>
+</head>
+<body>
+    <h1>Sanity(ze) Check</h1>
+    <p><s>Peace</s>Secure notes, at last</p>
+    <h2>Notes</h2>
+    <div id="notes">
+        <form id="search" action="/" method="get">
+            <input type="hidden" name="action" value="search">
+            <input type="text" id="search-input" name="query" placeholder="Search notes...">
+            <input type="number" id="limit-input" name="limit" value="10"
+                   min="1" max="50" aria-label="Result limit">
+            <select id="sort-input" name="sort" aria-label="Sort order">
+                <option value="newest" selected>Newest</option>
+                <option value="oldest">Oldest</option>
+            </select>
+            <button id="search-button" type="submit">Search</button>
+        </form>
+        <form id="add-note-form" action="/" method="get">
+            <input type="hidden" name="action" value="add">
+            <textarea id="content-input" name="content" maxlength="1000" placeholder="Note content (HTML supported, max 1000 chars)"></textarea>
+            <button type="submit">Add note</button>
+        </form>
+    </div>
+    <h2>Docs</h2>
+    <div id="docs">
+        <p><b>GET /?action=add&amp;content=sometexthere</b> Create a new note</p>
+        <p><b>GET /?action=search&amp;query=foo&amp;limit=10&amp;sort=newest</b> Search notes</p>
+        <p><b>limit</b> Number of results (1-50, default 10)</p>
+        <p><b>sort</b> Sort by newest or oldest (default newest)</p>
+    </div>
+</body>
+</html>

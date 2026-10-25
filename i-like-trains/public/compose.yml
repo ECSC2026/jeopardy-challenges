@@ -1,0 +1,16 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      # JWT key will be different on remote
+      - Jwt__Key=854fef3447d2f394e9ea684b6b7061dd
+      - DATA_DIR=/data
+      - ConnectionStrings__Default=Data Source=/data/app.db
+    volumes:
+      - sqlite-data:/data
+
+volumes:
+  sqlite-data:

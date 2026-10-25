@@ -1,0 +1,29 @@
+{
+  // The challenge is deliberately light on annotations; standard retains the useful checks.
+  "typeCheckingMode": "standard",
+  "pythonVersion": "3.10",
+
+  "include": ["public", "solution"],
+  "exclude": ["**/__pycache__", "**/.venv"],
+
+  // A global public extraPath makes app.py shadow the Bottle instance named app.
+  "executionEnvironments": [
+    {
+      "root": "solution",
+      "extraPaths": ["public", "solution"]
+    },
+    {
+      "root": "public",
+
+      // Bottle has no stubs: it rejects JSON response bodies and mistakes the
+      // module named app for the Bottle instance used by route decorators.
+      "reportArgumentType": "none",
+      "reportCallIssue": "none"
+    }
+  ],
+
+  "reportMissingTypeStubs": false,
+  "reportUntypedFunctionDecorator": false,
+  // The exploit intentionally reuses the bank's hash helper.
+  "reportPrivateUsage": false
+}

@@ -1,0 +1,9 @@
++----------------------------------------+
+|  ACME IoT Gateway - config viewer      |
+|  MicroPython v1.29.0                   |
++----------------------------------------+
+
+Serving files from www/. Path separators are rejected,
+so you can only read files in that directory.
+
+  available: index.html  banner.txt  device.cfg  style.css

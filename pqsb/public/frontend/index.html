@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PQ Swiss Bank</title>
+<link rel="icon" href="/static/favicon.svg">
+<link rel="stylesheet" href="/static/pqsb.css">
+<style>
+ @keyframes drosteLoop {
+   0%     { transform: scale(1.0000) rotate(0.000deg); }
+   5%     { transform: scale(1.0443) rotate(0.650deg); }
+   10%    { transform: scale(1.0906) rotate(1.300deg); }
+   15%    { transform: scale(1.1390) rotate(1.950deg); }
+   20%    { transform: scale(1.1895) rotate(2.600deg); }
+   25%    { transform: scale(1.2422) rotate(3.250deg); }
+   30%    { transform: scale(1.2973) rotate(3.900deg); }
+   35%    { transform: scale(1.3548) rotate(4.550deg); }
+   40%    { transform: scale(1.4148) rotate(5.200deg); }
+   45%    { transform: scale(1.4775) rotate(5.850deg); }
+   50%    { transform: scale(1.5430) rotate(6.500deg); }
+   55%    { transform: scale(1.6114) rotate(7.150deg); }
+   60%    { transform: scale(1.6829) rotate(7.800deg); }
+   65%    { transform: scale(1.7575) rotate(8.450deg); }
+   70%    { transform: scale(1.8354) rotate(9.100deg); }
+   75%    { transform: scale(1.9167) rotate(9.750deg); }
+   80%    { transform: scale(2.0017) rotate(10.400deg); }
+   85%    { transform: scale(2.0904) rotate(11.050deg); }
+   90%    { transform: scale(2.1831) rotate(11.700deg); }
+   95%    { transform: scale(2.2799) rotate(12.350deg); }
+   100%   { transform: scale(2.3810) rotate(13.000deg); }
+ }
+ .hero-ring {
+   position: relative; width: 484px; max-width: 100%; aspect-ratio: 1;
+   overflow: hidden; border-radius: 50%; border: 2px solid var(--ink);
+ }
+ .hero-fill {
+   position: absolute; inset: 0;
+   will-change: transform; backface-visibility: hidden;
+ }
+ .hero-hole {
+   -webkit-mask-image: radial-gradient(circle closest-side at 50% 50%, rgba(0,0,0,0) 0, rgba(0,0,0,0) 36%, #000 36.6%, #000 99.6%, rgba(0,0,0,0) 100%);
+   mask-image: radial-gradient(circle closest-side at 50% 50%, rgba(0,0,0,0) 0, rgba(0,0,0,0) 36%, #000 36.6%, #000 99.6%, rgba(0,0,0,0) 100%);
+   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+   -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+   mask-mode: alpha;
+   animation: drosteLoop 6s linear infinite;
+   animation-delay: -3s;
+ }
+ .hero-hole img {
+   width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%;
+   transform: scale(1.1); display: block;
+   filter: grayscale(1) contrast(2.9) brightness(1.04);
+ }
+ @media (prefers-reduced-motion: reduce) { .hero-hole { animation: none !important; } }
+
+ .hero {
+   display: grid;
+   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+   gap: 66px; align-items: center; padding: 66px var(--gutter);
+   border-bottom: 2px solid var(--ink);
+ }
+ .hero-copy {
+   display: flex; flex-direction: column; gap: 33px;
+   max-width: 34em; min-width: 0; container-type: inline-size;
+ }
+ .hero h1 {
+   font-size: 55px;
+   font-size: min(55px, 8.8cqw);
+   line-height: 1.08;
+   white-space: nowrap;
+ }
+ @media (max-width: 720px) {
+   .hero { grid-template-columns: 1fr; gap: 33px; }
+ }
+ .key-form { display: flex; gap: 0; align-items: stretch; max-width: 34em; }
+ .key-form .input { flex: 1 1 auto; min-width: 0; border-right: 0; }
+</style>
+</head>
+<body>
+<div id="chrome"></div>
+
+<section class="hero">
+  <div class="hero-copy">
+    <h1>A bearer bond<br>for the 21st century</h1>
+    <p class="lead">
+        Bearer instruments using our new lattice cryptography,
+        with maturities out to 2065.
+    </p>
+    <div class="row">
+      <a class="btn" href="#key">Get Started Today</a>
+    </div>
+  </div>
+  <div style="display:flex; justify-content:center">
+    <div class="hero-ring">
+      <div class="hero-fill" style="transform:scale(2.3809524) rotate(13deg)"><div class="hero-fill hero-hole"><img src="/static/hero.jpg" alt=""></div></div>
+      <div class="hero-fill" style="transform:scale(1) rotate(0deg)"><div class="hero-fill hero-hole"><img src="/static/hero.jpg" alt=""></div></div>
+      <div class="hero-fill" style="transform:scale(0.42) rotate(-13deg)"><div class="hero-fill hero-hole"><img src="/static/hero.jpg" alt=""></div></div>
+      <div class="hero-fill" style="transform:scale(0.1764) rotate(-26deg)"><div class="hero-fill hero-hole"><img src="/static/hero.jpg" alt=""></div></div>
+      <div class="hero-fill" style="transform:scale(0.074088) rotate(-39deg)"><div class="hero-fill hero-hole"><img src="/static/hero.jpg" alt=""></div></div>
+      <div class="hero-fill" style="transform:scale(0.031117) rotate(-52deg)"><div class="hero-fill hero-hole"><img src="/static/hero.jpg" alt=""></div></div>
+      <div class="hero-fill" style="transform:scale(0.0130691) rotate(-65deg)"><div class="hero-fill hero-hole"><img src="/static/hero.jpg" alt=""></div></div>
+      <div class="hero-fill" style="transform:scale(0.005489) rotate(-78deg)"><div class="hero-fill hero-hole"><img src="/static/hero.jpg" alt=""></div></div>
+      <div class="hero-fill" style="transform:scale(0.0023054) rotate(-91deg)"><div class="hero-fill hero-hole"><img src="/static/hero.jpg" alt=""></div></div>
+      <div class="hero-fill" style="transform:scale(0.0009683) rotate(-104deg)"><div class="hero-fill hero-hole"><img src="/static/hero.jpg" alt=""></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="stack" style="max-width:40em">
+    <h2>Three steps, no registry</h2>
+    <p class="lead">
+        A bearer bond is the oldest instrument in banking and now even harder to forge.
+        We issue it under signatures even quantum computers cannot break,
+        meaning these will stand the test of time in the digital age.
+    </p>
+  </div>
+  <div class="cards">
+    <div class="spine">
+      <h3>Sign Up</h3>
+      <p>
+          Open a client file under a serial number you pick yourself.
+          No name, no nominee, no onboarding queue.
+      </p>
+    </div>
+    <div class="spine">
+      <h3>Deposit</h3>
+      <p>
+          After picking your serial number,
+          every new account opens with a default deposit of
+          <span id="startDeposit">&mdash;</span>.
+      </p>
+    </div>
+    <div class="spine">
+      <h3>Issuance</h3>
+      <p>
+          Choose a maturity between 2032 and 2065 and sign.
+          Download the signed bond and store it securely.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="key">
+  <h2>Pick a Serial Number</h2>
+  <div class="stack" style="max-width:34em">
+    <label class="field">
+      <div class="key-form">
+        <input class="input" id="serial" type="text" spellcheck="false" maxlength="64"
+               autocapitalize="off" autocomplete="off" placeholder="any serial you like">
+        <button class="btn btn-ghost" type="button" id="roll"
+                style="border-left-width:2px">Roll</button>
+      </div>
+    </label>
+    <div class="spine-accent hidden" id="keyNotice" style="font-size:22px; line-height:1.5"></div>
+    <div class="row">
+      <button class="btn" type="button" id="enter">Get Started &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<section class="section-tight">
+  <h2>Information Brokerage</h2>
+  <p class="lead" style="max-width:40em">Market research, information and other interesting documents for sale, at the right price&hellip;</p>
+  <div class="row"><a class="btn" href="/assets">Info Exchange &rarr;</a></div>
+</section>
+
+<div id="foot"></div>
+
+<script src="/static/pqsb.js"></script>
+<script src="/static/landing.js"></script>
+</body>
+</html>

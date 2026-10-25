@@ -1,0 +1,217 @@
+// AWK grammar for awk2c.
+//
+// Expression precedence lives in one `PrattParser` table in `parser.rs`, not in
+// a stack of grammar levels; operatorless concatenation and the `/` regex-vs-
+// division ambiguity fall out of that shape — see the Expressions section below.
+// Newlines are significant (statement terminators); `nl` marks the positions
+// where a newline may be ignored (after `,`, `{`, `&&`, `||`, `?`, `:`, etc.).
+
+WHITESPACE = _{ " " | "\t" | ("\\" ~ NEWLINE) }
+COMMENT    = _{ "#" ~ (!NEWLINE ~ ANY)* }
+
+nl  = _{ NEWLINE* }
+sep = _{ ";" | NEWLINE }
+
+program = { SOI ~ sep* ~ (item ~ sep*)* ~ EOI }
+
+item = _{ function_def | rule }
+
+function_def = {
+    ("function" | "func") ~ name ~ "(" ~ nl ~ param_list? ~ nl ~ ")" ~ nl ~ block
+}
+param_list = { name ~ (nl ~ "," ~ nl ~ name)* }
+
+rule = {
+    special ~ nl ~ block
+  | pattern ~ nl ~ block
+  | pattern
+  | block
+}
+special = { "BEGIN" | "END" }
+pattern = { expr ~ (nl ~ "," ~ nl ~ expr)? }
+
+block = { "{" ~ sep* ~ stmt* ~ "}" }
+
+// A statement carries its own terminator. POSIX distinguishes statements that
+// terminate themselves by ending in `}` from those that need an explicit
+// `;`/newline; folding that into `stmt` makes the property propagate through
+// nested bodies for free (`while (c) { ... }` is self-terminating because its
+// body is, `while (c) print x` is not), so a statement list is just a sequence.
+// Hence `{ {m=i} print "x" }` and `for (...) { ... } print x` are accepted,
+// while `print 1 print 2` is still rejected. Silent, so a statement position
+// yields the concrete statement rule directly (`parse_stmt` dispatches on it).
+stmt = _{
+    block ~ sep*
+  | if_stmt
+  | while_stmt
+  | for_stmt
+  | simple_stmt ~ stmt_end
+}
+
+// Statements that do not end in `}`; `do` belongs here because it ends in `)`.
+simple_stmt = _{
+    do_stmt
+  | break_stmt
+  | continue_stmt
+  | next_stmt
+  | exit_stmt
+  | return_stmt
+  | delete_stmt
+  | printf_stmt
+  | print_stmt
+  | expr_stmt
+}
+
+// The last statement of a block needs no terminator of its own.
+stmt_end = _{ sep+ | &"}" }
+
+// `else` and the `while` of a `do` are looked for at a point where the body
+// statement may already have ended, so they must not swallow the head of an
+// identifier: `if (c) x = 1 <newline> elsewhere = 2` is two statements. The
+// word check has to be its own atomic rule (implicit whitespace would let
+// `"else" ~ !ident_cont` skip the gap and test the *next* token instead), and
+// it is applied through a lookahead because rules inside a predicate produce
+// no pairs — so the shape `parse_stmt` sees is unchanged.
+else_word  = @{ "else" ~ !ident_cont }
+while_word = @{ "while" ~ !ident_cont }
+
+// The bodies below consume their own trailing separators, so `else` and the
+// `while` of a `do` follow the body statement directly.
+if_stmt       = { "if" ~ nl ~ "(" ~ nl ~ expr ~ nl ~ ")" ~ nl ~ stmt ~ (&else_word ~ "else" ~ nl ~ stmt)? }
+while_stmt    = { "while" ~ nl ~ "(" ~ nl ~ expr ~ nl ~ ")" ~ nl ~ stmt }
+do_stmt       = { "do" ~ nl ~ stmt ~ &while_word ~ "while" ~ nl ~ "(" ~ nl ~ expr ~ nl ~ ")" }
+for_stmt      = {
+    "for" ~ nl ~ "(" ~ nl ~ name ~ nl ~ "in" ~ nl ~ name ~ nl ~ ")" ~ nl ~ stmt
+  | "for" ~ nl ~ "(" ~ nl ~ for_init? ~ ";" ~ nl ~ for_cond? ~ ";" ~ nl ~ for_update? ~ nl ~ ")" ~ nl ~ stmt
+}
+for_init   = { expr }
+for_cond   = { expr }
+for_update = { expr }
+
+break_stmt    = { "break" }
+continue_stmt = { "continue" }
+next_stmt     = { "next" }
+exit_stmt     = { "exit" ~ expr? }
+return_stmt   = { "return" ~ expr? }
+delete_stmt   = { "delete" ~ name ~ ("[" ~ nl ~ expr_list ~ nl ~ "]")? }
+print_stmt    = { "print" ~ print_args? }
+printf_stmt   = { "printf" ~ print_args }
+// The parenthesized form is tried first, because `paren_expr` would otherwise
+// swallow `(1, 2)` as a single operand and drop all but its first element. The
+// lookahead keeps it from claiming a parenthesis that only *starts* the argument
+// list: `print (1+2)*3` and `print (a) (b)` fall through to the bare form.
+print_args    = _{ "(" ~ nl ~ expr_list ~ nl ~ ")" ~ &stmt_end | expr_list }
+expr_stmt     = { expr }
+
+// ---- Expressions -----------------------------------------------------------
+//
+// Precedence lives in one `PrattParser` table in `parser.rs` (lowest first),
+// not in a stack of grammar levels: `pratt_expr` matches a *flat* stream of
+// operands and operators, and the parser folds it. Assignment and the ternary
+// stay outside it — assignment because its left side must be an lvalue, the
+// ternary because `? :` is not an infix operator.
+//
+// Operatorless concatenation (`a " " b`) is what makes a Pratt table look
+// inapplicable here; it is expressed as a **zero-width `concat_op`**, the *last*
+// alternative of `infix`, so it matches only where no real operator does and
+// gives the table a token to hang concatenation's precedence on. The repetition
+// it sits in still terminates: `concat_op` always succeeds, but the `operand`
+// after it cannot match empty, so the iteration fails there and the loop ends.
+// It costs one failed operand match per expression — where a stratified grammar
+// (`X = _{ chain | operand }`) re-parses the operand on every backtrack, which
+// is exponential in the number of levels.
+//
+// The `/` ambiguity falls out of the shape rather than needing its own rule: in
+// the `infix` slot a `/` is `mul_op` (division), in the `operand` slot it starts
+// a `regex`. That is exactly the lexical-context rule traditional awk uses.
+
+expr = _{ assignment }
+
+assignment = { lvalue ~ assign_op ~ nl ~ assignment | ternary }
+assign_op  = @{ "+=" | "-=" | "*=" | "/=" | "%=" | "^=" | ("=" ~ !"=") }
+
+ternary = { pratt_expr ~ ("?" ~ nl ~ ternary ~ ":" ~ nl ~ ternary)? }
+
+pratt_expr = { prefix* ~ operand ~ post_op* ~ (infix ~ prefix* ~ operand ~ post_op*)* }
+
+// A newline may follow `||`, `&&` and `^`, and nothing else here: were `nl`
+// applied to `infix` as a whole it would also follow the zero-width `concat_op`,
+// and the newline separating two statements would be swallowed as a
+// concatenation (`x = 1 <newline> print 2` would parse as `x = 1 print`).
+infix = _{
+    (or_op | and_op | pow_op) ~ nl
+  | in_op | match_op | comp_op | add_op | mul_op
+  | concat_op
+}
+or_op     = { "||" }
+and_op    = { "&&" }
+// Must not swallow the head of an identifier, so `x inside` is not `x in side`.
+in_op     = @{ "in" ~ !ident_cont }
+match_op  = { "!~" | "~" }
+comp_op   = { "<=" | ">=" | "==" | "!=" | "<" | ">" }
+add_op    = { "+" | "-" }
+mul_op    = { "*" | "/" | "%" }
+pow_op    = { "^" }
+concat_op = { "" }
+
+// `++`/`--` need distinct rules per position: the Pratt table keys on the rule,
+// so one shared rule could not say whether a given `++` was prefix or postfix.
+prefix  = _{ pre_op | un_op }
+pre_op  = { "++" | "--" }
+post_op = { "++" | "--" }
+un_op   = @{ "!" | ("-" ~ !"-") | ("+" ~ !"+") }
+
+operand = _{
+    number
+  | string
+  | regex
+  | paren_expr
+  | field
+  | getline_expr
+  | call
+  | array_ref
+  | var
+}
+
+// Parenthesized expression and parenthesized `in` membership in one rule, so the
+// contents are parsed once. Two rules ordered `membership | grouping` would
+// re-parse the inside on every failed membership match, which is exponential in
+// paren depth. Without the `in`, a valid program's list holds exactly one
+// element (`print (1, 2)` is an argument list, and `print_args` claims it first).
+paren_expr   = { "(" ~ nl ~ expr_list ~ nl ~ ")" ~ (in_op ~ name)? }
+getline_expr = { "getline" ~ lvalue? }
+call         = { name ~ "(" ~ nl ~ expr_list? ~ nl ~ ")" }
+array_ref    = { name ~ "[" ~ nl ~ expr_list ~ nl ~ "]" }
+var          = { name }
+
+field        = { "$" ~ field_target }
+field_target = _{ field | paren_expr | call | array_ref | var | number }
+
+lvalue = _{ field | array_ref | var }
+
+expr_list = { expr ~ (nl ~ "," ~ nl ~ expr)* }
+
+// ---- Terminals -------------------------------------------------------------
+
+number = @{
+    ("." ~ ASCII_DIGIT+ ~ exp?)
+  | (ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT*)? ~ exp?)
+}
+exp = _{ ("e" | "E") ~ ("+" | "-")? ~ ASCII_DIGIT+ }
+
+string    = ${ "\"" ~ str_inner ~ "\"" }
+str_inner = @{ str_char* }
+str_char  = _{ "\\" ~ ANY | !("\"" | "\\" | NEWLINE) ~ ANY }
+
+regex       = ${ "/" ~ regex_inner ~ "/" }
+regex_inner = @{ regex_char* }
+regex_char  = _{ "\\" ~ ANY | !("/" | "\\" | NEWLINE) ~ ANY }
+
+name    = @{ !(keyword ~ !ident_cont) ~ ident }
+ident   = _{ (ASCII_ALPHA | "_") ~ ident_cont* }
+ident_cont = _{ ASCII_ALPHANUMERIC | "_" }
+keyword = _{
+    "BEGIN" | "END" | "function" | "func" | "if" | "else" | "while"
+  | "for" | "do" | "break" | "continue" | "next" | "exit"
+  | "return" | "delete" | "in" | "getline" | "printf" | "print"
+}

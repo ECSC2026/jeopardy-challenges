@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#050b0b">
+    <title>Sponsorships · ECSC 2026</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <div class="scanlines" aria-hidden="true"></div>
+    <nav>
+      <a class="brand" href="{{ url_for('index') }}">ECSC::2026</a>
+      <div class="nav-links" aria-hidden="true"><span>HOME</span><span class="active">SPONSORS</span><span>CONTACT</span></div>
+      <div class="online"><i></i>REGISTRATION OPEN</div>
+    </nav>
+
+    <main>
+      <header class="section-heading">
+        <div class="section-label"><i></i><span>SECTION::003</span></div>
+        <h1>SPONSORSHIP TIERS</h1>
+        <p>Partner with Europe's largest youth cybersecurity competition. Choose the tier that fits your team.</p>
+      </header>
+
+      <section class="card-grid">
+        <article class="card featured corner-brackets">
+          <header class="card-header">
+            <div><span class="icon">✦</span><b>FLAG SPONSOR</b></div>
+            <small>0 slots</small>
+          </header>
+          <div class="card-title">SOLD OUT</div>
+          <div class="card-content grow">
+            <div class="micro-heading">BENEFITS:</div>
+            <ul>
+              <li><span>▸</span>Exclusive recognition as Flag Sponsor - can only be sold once</li>
+              <li><span>▸</span>Priority access to restricted materials</li>
+              <li><span>▸</span>Permanent advancement on the scoreboard</li>
+              <li><span>▸</span>A very special flag, just for you</li>
+            </ul>
+
+            {% if error %}
+              <div class="notice error"><b>NOTICE</b> {{ error }}</div>
+            {% endif %}
+
+            <form class="tier-form" action="{{ url_for('register') }}" method="post">
+              <input type="hidden" name="sponsortier" value="flag">
+              <button type="submit" disabled>SOLD OUT</button>
+            </form>
+          </div>
+        </article>
+
+        <article class="card">
+          <header class="card-header"><div><span class="icon">◇</span><b>MAIN SPONSOR</b></div><small>2 slots</small></header>
+          <div class="card-title secondary">150.000 ₿</div>
+          <div class="card-content grow">
+            <div class="micro-heading">BENEFITS:</div>
+            <ul>
+              <li><span>▸</span>Even more wow</li>
+            </ul>
+            <form class="tier-form" action="{{ url_for('register') }}" method="post">
+              <input type="hidden" name="sponsortier" value="main">
+              <button class="secondary-button" type="submit">REGISTER</button>
+            </form>
+          </div>
+        </article>
+
+        <article class="card">
+          <header class="card-header"><div><span class="icon">◉</span><b>GOLD</b></div><small>3 slots</small></header>
+          <div class="card-title secondary">65.000 ₿</div>
+          <div class="card-content grow">
+            <div class="micro-heading">BENEFITS:</div>
+            <ul>
+              <li><span>▸</span>Big wow</li>
+            </ul>
+            <form class="tier-form" action="{{ url_for('register') }}" method="post">
+              <input type="hidden" name="sponsortier" value="gold">
+              <button class="secondary-button" type="submit">REGISTER</button>
+            </form>
+          </div>
+        </article>
+
+        <article class="card">
+          <header class="card-header"><div><span class="icon">⬡</span><b>SILVER</b></div><small>4 slots</small></header>
+          <div class="card-title secondary">10.000 ₿</div>
+          <div class="card-content grow">
+            <div class="micro-heading">BENEFITS:</div>
+            <ul>
+              <li><span>▸</span>Wow</li>
+            </ul>
+            <form class="tier-form" action="{{ url_for('register') }}" method="post">
+              <input type="hidden" name="sponsortier" value="silver">
+              <button class="secondary-button" type="submit">REGISTER</button>
+            </form>
+          </div>
+        </article>
+
+        <article class="card">
+          <header class="card-header"><div><span class="icon">◎</span><b>COMMUNITY</b></div><small>5 slots</small></header>
+          <div class="card-title secondary">5.000 ₿</div>
+          <div class="card-content grow">
+            <div class="micro-heading">BENEFITS:</div>
+            <ul>
+              <li><span>▸</span>Little Wow</li>
+            </ul>
+            <form class="tier-form" action="{{ url_for('register') }}" method="post">
+              <input type="hidden" name="sponsortier" value="community">
+              <button class="secondary-button" type="submit">REGISTER</button>
+            </form>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer><span>ECSC::2026 // PARTNERSHIPS</span><span>SPONSOR_PORTAL</span></footer>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define WORDS 16
+
+/* 26-bit mode transform function (check.S) */
+extern void transform(unsigned long *state);
+
+static const unsigned char target[64] = {
+    0xd9, 0xe3, 0xdb, 0xda, 0xa0, 0x9f, 0xcc, 0x54,
+    0x11, 0x93, 0x45, 0xc6, 0x9e, 0xb6, 0xdb, 0xe6,
+    0xa4, 0xd0, 0x90, 0x0b, 0x28, 0x67, 0x8a, 0xec,
+    0xbe, 0x61, 0x92, 0xd7, 0xd5, 0x0e, 0x5e, 0x70,
+    0x11, 0x26, 0xd6, 0x35, 0x54, 0x41, 0x2e, 0x5e,
+    0x24, 0xca, 0x88, 0x4f, 0x0c, 0xa6, 0xbd, 0x24,
+    0xdf, 0x62, 0x30, 0x63, 0x2f, 0x58, 0x30, 0xa6,
+    0x6b, 0x8f, 0x3e, 0x9f, 0x4e, 0x7b, 0x5c, 0x49,
+};
+
+/* Ye Olde Flag Checker */
+int main(int argc, char *argv[])
+{
+    unsigned long state[WORDS];
+
+    _Static_assert(sizeof(unsigned long) == 4, "This is a 32-bit system");
+    _Static_assert(sizeof(state) == sizeof(target), "Output size must match input size");
+
+    if (argc != 2 || strlen(argv[1]) != sizeof(target)) {
+        fprintf(stderr, "usage: %s flag\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+    memcpy(state, argv[1], sizeof(state));
+
+    transform(state);
+
+    if (memcmp(state, target, sizeof(target)))
+        puts(":(");
+    else
+        puts(":)");
+
+    return EXIT_SUCCESS;
+}

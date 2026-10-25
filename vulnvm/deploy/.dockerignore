@@ -1,0 +1,14 @@
+# Rebuilt inside the image — never copy host artifacts in (a stale host binary
+# would make `make` skip the in-container build and ship the wrong libc's binary).
+/build/
+*.o
+
+# Not needed in the challenge image.
+/.git/
+/.claude/
+/.claude.json
+/tests/
+/examples/
+*.swp
+*~
+.DS_Store

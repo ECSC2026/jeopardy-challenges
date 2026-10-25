@@ -1,0 +1,6 @@
+services:
+  haml-sandbox:
+    build: .
+    ports:
+      - "31337:31337"
+    restart: unless-stopped

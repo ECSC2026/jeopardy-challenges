@@ -1,0 +1,12 @@
+name: codescan
+
+services:
+  codescan:
+    build: .
+    environment:
+      FLAG: "ECSC{fake_flag}"
+      # Get fked, secret scanning
+      GITHUB_TOKEN_B64_REVERSED: "${GITHUB_TOKEN_B64_REVERSED:-}"
+      TEAMID: "${TEAMID}"
+    ports:
+      - "1337:1337"

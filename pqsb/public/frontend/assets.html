@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assets for Sale &middot; PQ Swiss Bank</title>
+<link rel="icon" href="/static/favicon.svg">
+<link rel="stylesheet" href="/static/pqsb.css">
+</head>
+<body>
+<div id="chrome"></div>
+
+<div class="status-bar">
+  <span>Assets for Sale</span>
+  <span class="dim">Key <span id="keyId">&mdash;</span> &middot; <span id="clock">&mdash;</span>
+    &middot; <span id="statusLine">0 assets listed</span></span>
+</div>
+
+<section class="section-tight">
+  <div class="stack" style="max-width:34em">
+    <h1>Information Brokerage</h1>
+    <p>Market research, information and other interesting documents for sale, at the right price&hellip;</p>
+  </div>
+
+  <div class="table-frame">
+    <div class="table" id="table">
+      <div class="th">Filename</div>
+      <div class="th">Contents</div>
+      <div class="th">Price</div>
+      <div class="th"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-tight on-ink hidden" id="ticket"
+         style="background:var(--ink); color:var(--paper); display:grid;
+                grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+                gap:44px; align-items:start">
+  <div class="stack" style="max-width:32em">
+    <h2 id="tFilename" style="text-transform:none">&mdash;</h2>
+    <p id="tAbout"></p>
+    <div class="spine-accent hidden" id="tNotice" style="font-size:22px; line-height:1.5"></div>
+    <div class="row">
+      <button class="btn" type="button" id="settle">Settle and download &rarr;</button>
+      <button class="btn btn-ghost" type="button" id="cancel">Cancel</button>
+    </div>
+  </div>
+  <div class="frame">
+    <div class="stat-grid">
+      <div class="stat"><span class="label">Consideration</span><span class="figure" id="tCons">&mdash;</span></div>
+      <div class="stat"><span class="label">Balance</span><span class="figure" id="tBal">&mdash;</span></div>
+      <div class="stat"><span class="label">Balance after</span><span class="figure" id="tAfter">&mdash;</span></div>
+      <div class="stat"><span class="label">Assets held</span><span class="figure" id="tHeld">0</span></div>
+    </div>
+  </div>
+</section>
+
+<div id="foot"></div>
+
+<script src="/static/pqsb.js"></script>
+<script src="/static/assets.js"></script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trust Issues</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --panel: #fffdf9;
+        --ink: #1d1d1b;
+        --accent: #9f3d24;
+        --border: #d7c7b6;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+          BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+      }
+      main {
+        max-width: 720px;
+        margin: 48px auto;
+        padding: 32px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        box-shadow: 0 12px 40px rgba(40, 20, 10, 0.08);
+      }
+      h1 {
+        margin-top: 0;
+        font-size: 2rem;
+      }
+      form {
+        display: grid;
+        gap: 16px;
+      }
+      label {
+        display: grid;
+        gap: 6px;
+        font-weight: 600;
+      }
+      input {
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        font: inherit;
+      }
+      button {
+        width: fit-content;
+        padding: 10px 16px;
+        border: 0;
+        background: var(--accent);
+        color: white;
+        font: inherit;
+        cursor: pointer;
+      }
+      pre {
+        white-space: pre-wrap;
+        padding: 16px;
+        background: #fbf6f0;
+        border: 1px solid var(--border);
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      }
+      .error {
+        color: #8b0000;
+      }
+      .response[hidden] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Trust Issues</h1>
+      <p>Only trusted servers receive the flag, but I do not trust any.</p>
+      <form id="request-form" method="post">
+        <label>
+          Server IP
+          <input name="ip" required>
+        </label>
+        <label>
+          Server Port
+          <input name="port">
+        </label>
+        <button type="submit">Send</button>
+      </form>
+
+      <section id="response-panel" class="response" hidden>
+        <h2>Response</h2>
+        <pre id="response-output"></pre>
+      </section>
+    </main>
+    <script>
+      const form = document.getElementById("request-form");
+      const responsePanel = document.getElementById("response-panel");
+      const responseOutput = document.getElementById("response-output");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        responsePanel.hidden = false;
+        responseOutput.textContent = "Loading...";
+
+        try {
+          const response = await fetch("/", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+            },
+            body: new URLSearchParams(new FormData(form)),
+          });
+
+          const payload = await response.json();
+          responseOutput.textContent = payload.result || "";
+        } catch (error) {
+          responseOutput.textContent = String(error);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "undercover-bot",
+  "version": "1.0.0",
+  "private": true,
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "playwright": "1.61.1"
+  }
+}

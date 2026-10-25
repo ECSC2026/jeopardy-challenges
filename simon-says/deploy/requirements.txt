@@ -1,0 +1,4 @@
+anyio==4.14.2
+idna==3.19
+msgpack==1.2.2
+pycryptodome==3.23.0

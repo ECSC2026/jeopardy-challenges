@@ -1,0 +1,86 @@
+PQ SWISS BANK AG
+ZIMA DOSSIER
+Classification: Strictly private / Board
+Review date: 30 June 2026
+
+EXECUTIVE SUMMARY
+-----------------
+Aleksei Mikhailovich Vetrograd is a Russian industrialist whose wealth
+derives from ports, mineral logistics and the favourable resolution of
+several state privatisations. He controls the ZIMA relationship through
+Borealis Meridian SA and a chain of foundations, nominees and advisory
+companies. The chain has no commercial purpose visible to the bank.
+
+Assets under management are CHF 184.2m. A further CHF 226.9m is held
+under client VOLNA, whose beneficial owner has granted Mr Vetrograd an
+irrevocable power of attorney. Wealth Management treats the two clients
+as unrelated for concentration reporting.
+
+IDENTITY
+--------
+Name:             Aleksei Mikhailovich Vetrograd
+Aliases:          A. M. Vetrogrod; Alex Wintercity; client ZIMA
+Nationality:      Russian Federation
+Residence:        Travelling
+Occupation:       Industrial policy entrepreneur
+Relationship:     Politically exposed by proximity
+
+OWNERSHIP STRUCTURE
+-------------------
+
+    Aleksei M. Vetrograd
+             |
+    White Fir Foundation, Liechtenstein
+             |
+    Borealis Meridian SA, Panama
+             |
+    Northglass Shipping FZE, United Arab Emirates
+             |
+    PQSB accounts ZIMA and VOLNA
+
+White Fir Foundation names no beneficial owner. Its council is appointed
+by Alpine Nominees GmbH, which is owned by the client's family office.
+The family office supplied a legal opinion concluding that this is not
+the same as ownership.
+
+SOURCE OF WEALTH
+----------------
+The client acquired a controlling interest in the Volnogorsk export
+terminal during the 1994 privatisation programme. The purchase price is
+not recorded. The client states that this proves the investment was made
+at market value; Compliance takes the opposite view.
+
+Subsequent wealth is attributed to dividends, consulting fees and the
+sale of consulting services to companies already controlled by the
+client. No invoices were available for review.
+
+ADVERSE INFORMATION
+-------------------
+Open-source reporting links the client to public procurement decisions,
+senior state officials and the unexplained transfer of three cargo
+terminals. The client disputes the spelling used in those reports.
+
+Automated screening therefore produces possible rather than exact
+matches. See the 12 May 2026 mail thread under "spelling review".
+
+COMPLIANCE RECOMMENDATION
+-------------------------
+Exit ZIMA and all connected relationships; reject further transfers from
+Northglass Shipping FZE; report the common control of ZIMA and VOLNA in
+the next concentration return.
+
+BOARD DISPOSITION
+-----------------
+The Private Clients Committee declined the recommendation. Minutes record
+the following reasons:
+
+1. The relationship is strategically necessary.
+2. Possible matches are not exact matches.
+3. Adverse media is still only media.
+4. Exiting CHF 411.1m would create an avoidable concentration event on
+   the income statement.
+
+The relationship remains open. The next annual review is scheduled for
+the first politically convenient date after 2030.
+
+Exercise data: all persons, entities, balances and transactions are fictional.

@@ -1,0 +1,57 @@
+default:
+    @just --list
+
+# Run the challenge on http://127.0.0.1:8080.
+dev port="8080":
+    cd public && uv run app.py --port {{port}}
+
+# Run the challenge on all interfaces, for a real deployment.
+serve port="8080":
+    cd public && uv run serve.py --host 0.0.0.0 --port {{port}}
+
+# Recover a key and buy the flag from an already-running challenge.
+solve url="http://127.0.0.1:8080":
+    cd solution && sage doit.sage {{url}}
+
+# Run every check against a temporary instance.
+test: lint
+    #!/usr/bin/env bash
+    set -euo pipefail
+    port="$(python3 -c 'import socket; s = socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])')"
+    url="http://127.0.0.1:$port"
+    log="$(mktemp)"
+    (cd public && exec uv run serve.py --port "$port") >"$log" 2>&1 &
+    bank=$!
+    trap 'pkill -P $bank >/dev/null 2>&1 || true; kill $bank >/dev/null 2>&1 || true; rm -f "$log"' EXIT
+    for _ in $(seq 150); do
+        if curl -sfo /dev/null "$url/api/shop"; then break; fi
+        sleep 0.2
+    done
+    if ! curl -sfo /dev/null "$url/api/shop"; then cat "$log"; exit 1; fi
+    just e2e "$url"
+    just solve "$url"
+
+# Drive the frontend in a browser against an already-running challenge.
+e2e url="http://127.0.0.1:8080" *args: browser
+    uv run --project e2e pytest e2e --base-url {{url}} {{args}}
+
+# Fetch the Chromium the browser tests drive. Idempotent.
+browser:
+    uv run --project e2e playwright install chromium
+
+# Lint, format-check and type-check the Python.
+lint:
+    uv run --with ruff ruff check .
+    uv run --with ruff ruff format --check .
+    uv run --with basedpyright basedpyright --pythonpath public/.venv/bin/python public
+
+# Reformat in place.
+fmt:
+    uv run --with ruff ruff format .
+    uv run --with ruff ruff check --fix .
+
+# Remove build and run artefacts.
+clean:
+    rm -rf public/.venv e2e/.venv build solution/forged_note.txt solution/notes.json
+    rm -rf .pytest_cache test-results
+    find . -name __pycache__ -type d -prune -exec rm -rf {} +

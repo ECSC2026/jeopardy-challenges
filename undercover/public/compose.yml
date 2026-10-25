@@ -1,0 +1,12 @@
+name: undercover
+
+services:
+  bot:
+    build: ./bot
+    container_name: undercover-bot
+    restart: unless-stopped
+    environment:
+      FLAG: "ECSC{fake_flag}"
+      PORT: "1337"
+    ports:
+      - "1337:1337"

@@ -1,0 +1,15 @@
+# The oldest Python version we test.
+target-version = "py310"
+
+
+[lint]
+select = ["E", "W", "F", "I", "B", "SIM", "RUF", "EXE", "TRY", "FURB", "PLW"]
+ignore = [
+    "E501",   # The formatter owns line length.
+    "TRY004", # Malformed tokens are values, not type errors.
+    "TRY003", # Errors tell handout authors how to fix their input.
+]
+
+[lint.isort]
+# Local scripts import these after adjusting sys.path.
+known-first-party = ["app", "lru", "mldsa", "pqsb"]

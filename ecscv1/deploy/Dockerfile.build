@@ -1,0 +1,19 @@
+# docker build --output=. -f Dockerfile.build .
+
+FROM buildpack-deps:trixie@sha256:352e8a203d5cf4466abb68b7910e06b90dcd23b7ccf8104e537bd4870c35bf15 AS builder
+
+# ynetd is just for spawning the challenge
+ADD --chmod=0666 --checksum=sha256:4300f2fbc3996bc389d3c03a74662bfff3106ac1930942c5bd27580c7ba5053d \
+    https://yx7.cc/code/ynetd/ynetd-0.1.2.tar.xz \
+    /ynetd-0.1.2.tar.xz
+
+RUN tar -xf ynetd-0.1.2.tar.xz && \
+    cd /ynetd-0.1.2 && \
+    make
+
+COPY main.c /
+# compile with library path set to make debugging easier
+RUN gcc -gdwarf -Wl,-z,relro,-z,now,-rpath,.,-dynamic-linker,./ld-linux-x86-64.so.2 -fpic -pie -O0 -o main main.c
+
+FROM scratch AS binary
+COPY --from=builder /main /ynetd-0.1.2/ynetd /lib/x86_64-linux-gnu/libc.so.6 /lib64/ld-linux-x86-64.so.2 .

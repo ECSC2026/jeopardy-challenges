@@ -1,0 +1,24 @@
+PQ SWISS BANK AG
+CLIENT ACCOUNTS
+Valuation date: 30 June 2026
+Classification: Restricted / Wealth Management
+
+CODE    BENEFICIAL OWNER          BOOKING VEHICLE             BALANCE CHF    REVIEW
+----    ------------------------  --------------------------  -------------  ----------------
+ZIMA    Aleksei M. Vetrograd      Borealis Meridian SA          184'200'000  BOARD WAIVER
+ONEGA   Yuri P. Ledenov           White Fir Foundation           71'850'000  EDD DEFERRED
+SNEG    Marina A. Korsina         Polar Crown Trading Ltd         38'410'000  STANDARD*
+VOLNA   Sergei N. Baranov         Northglass Shipping FZE        226'900'000  BOARD WAIVER
+ZARYA   Tatiana V. Orlova         Red October Arts Stiftung       19'775'000  EXIT PENDING
+
+Notes
+-----
+1. Balances include fiduciary deposits booked through third parties.
+2. "Board waiver" means the board accepted the risk; it does not mean
+   the risk went away.
+3. STANDARD* was introduced for relationships that are standard except
+   for the facts recorded in their files.
+4. ZARYA has been exit pending since 2022. The client has not agreed to
+   be exited.
+
+Exercise data: all persons, entities, balances and transactions are fictional.

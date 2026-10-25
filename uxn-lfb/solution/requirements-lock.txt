@@ -1,0 +1,77 @@
+# Generated from requirements.txt with pip-compile.
+bcrypt==5.0.0
+    # via paramiko
+capstone==6.0.0a10
+    # via
+    #   pwntools
+    #   ropgadget
+certifi==2026.7.22
+    # via requests
+cffi==2.1.1
+    # via
+    #   cryptography
+    #   pynacl
+charset-normalizer==3.5.1
+    # via requests
+colored-traceback==0.4.2
+    # via pwntools
+cryptography==50.0.1
+    # via paramiko
+idna==3.19
+    # via requests
+intervaltree==3.2.1
+    # via pwntools
+invoke==3.0.3
+    # via paramiko
+mako==1.4.1
+    # via pwntools
+markupsafe==3.0.3
+    # via mako
+packaging==26.3
+    # via pwntools
+paramiko==5.0.0
+    # via pwntools
+plumbum==2.0.2
+    # via rpyc
+psutil==7.2.2
+    # via pwntools
+pwntools==4.15.0
+    # via requirements.txt
+pycparser==3.0
+    # via cffi
+pyelftools==0.33
+    # via pwntools
+pygments==2.21.0
+    # via
+    #   colored-traceback
+    #   pwntools
+pynacl==1.6.2
+    # via paramiko
+pyserial==3.5
+    # via pwntools
+pysocks==1.7.1
+    # via pwntools
+python-dateutil==2.9.0.post0
+    # via pwntools
+requests==2.34.2
+    # via pwntools
+ropgadget==7.7
+    # via pwntools
+rpyc==6.0.2
+    # via pwntools
+six==1.17.0
+    # via
+    #   pwntools
+    #   python-dateutil
+sortedcontainers==2.4.0
+    # via
+    #   intervaltree
+    #   pwntools
+unicorn==2.1.2
+    # via pwntools
+unix-ar==0.2.1
+    # via pwntools
+urllib3==2.7.0
+    # via requests
+zstandard==0.25.0
+    # via pwntools

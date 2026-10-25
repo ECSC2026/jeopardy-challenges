@@ -1,0 +1,49 @@
+* {
+    font-family: monospace;
+}
+
+#notes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+#search,
+#add-note-form {
+    display: flex;
+    gap: 0.5em;
+}
+
+#add-note-form {
+    flex-direction: column;
+}
+
+#content-input {
+    min-height: 6em;
+}
+
+#limit-input {
+    width: 5em;
+}
+
+.note {
+    background-color: #f0f0f0;
+    padding: 1em;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.note button {
+    margin-top: 0.5em;
+}
+
+#docs {
+    background-color: #f0f0f0;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+}
+
+#docs p {
+    margin: 0.5em 0;
+}

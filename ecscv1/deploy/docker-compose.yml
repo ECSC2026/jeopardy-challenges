@@ -1,0 +1,5 @@
+services:
+   ecscv1:
+    build: .
+    ports:
+      - "1024:1024"

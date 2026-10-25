@@ -1,0 +1,6 @@
+services:
+  awk2c:
+    restart: always
+    build: deploy
+    ports:
+     - "1337:1337"

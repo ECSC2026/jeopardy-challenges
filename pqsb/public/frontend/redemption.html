@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bond Redemption &middot; PQ Swiss Bank</title>
+<link rel="icon" href="/static/favicon.svg">
+<link rel="stylesheet" href="/static/pqsb.css">
+</head>
+<body>
+<div id="chrome"></div>
+
+<div class="status-bar">
+  <span>Bond Redemption</span>
+  <span class="dim">Key <span id="keyId">&mdash;</span> &middot; <span id="clock">&mdash;</span>
+    &middot; <span id="statusLine">Nothing presented</span></span>
+</div>
+
+<section class="split">
+  <div class="pane-paper" style="border-bottom:0">
+    <h1>Present a bond</h1>
+    <p style="max-width:30em">
+        Parse and verify a signed bearer bond.
+    </p>
+
+    <div class="plate" id="plate">
+      <svg viewBox="0 0 44 44" width="44" height="44" aria-hidden="true">
+        <path d="M6 26 H12 V32 H32 V26 H38 V38 H6 Z M19 6 H25 V18 H33 L22 30 L11 18 H19 Z" fill="currentColor"/>
+      </svg>
+      <span>Drop the signed bond here</span>
+      <label class="browse">
+        Or browse
+        <input type="file" id="pick" accept=".bond,.txt,application/json" style="display:none">
+      </label>
+    </div>
+
+    <div class="spine-accent hidden" id="reject" style="display:flex; flex-direction:column; gap:11px">
+      <span class="meta">Rejected</span>
+      <span style="font-size:22px; line-height:1.5" id="rejectWhy"></span>
+    </div>
+
+    <div class="spine-hair meta-loose">
+      <span>Need one? <a href="/issuance">Issue a bond</a></span>
+    </div>
+  </div>
+
+  <div class="pane-ink on-ink">
+    <div class="meta" style="display:flex; justify-content:space-between; gap:22px; flex-wrap:wrap">
+      <span>Verification</span>
+      <span style="color:var(--paper-55)" id="fileName">No file</span>
+    </div>
+
+    <div id="presented" class="hidden" style="display:flex; flex-direction:column; gap:22px">
+      <div class="frame">
+        <div class="stat-grid">
+          <div class="stat"><span class="label">Principal</span><span class="figure" id="vPrincipal">&mdash;</span></div>
+          <div class="stat"><span class="label">Issued</span><span class="figure" id="vIssued">&mdash;</span></div>
+          <div class="stat"><span class="label">Nonce</span><span class="figure figure-sm" id="vNonce">&mdash;</span></div>
+          <div class="stat"><span class="label">Issuer key</span><span class="figure figure-sm" id="vKey">&mdash;</span></div>
+        </div>
+      </div>
+
+      <div class="checks">
+        <div class="check"><span>Structure</span><span id="cStructure">&mdash;</span></div>
+        <div class="check"><span>Signature &middot; ML-DSA-87</span><span id="cSignature">&mdash;</span></div>
+        <div class="check"><span>Issued to this key</span><span id="cKey">&mdash;</span></div>
+        <div class="check"><span>Nonce not burned</span><span id="cNonce">&mdash;</span></div>
+      </div>
+
+      <div class="meta-loose" style="word-break:break-all; color:var(--paper-62)">SIG <span id="sigShort"></span></div>
+
+      <div class="row" id="actions">
+        <button class="btn" type="button" id="redeem">Redeem &rarr;</button>
+        <button class="btn btn-ghost" type="button" id="discard">Discard</button>
+      </div>
+
+      <div id="paid" class="hidden" style="display:flex; flex-direction:column; gap:22px">
+        <div style="border:2px solid var(--paper); padding:22px; display:flex; flex-direction:column; gap:11px">
+          <span class="meta">Redeemed</span>
+          <span style="font-size:22px; line-height:1.5" id="paidLine"></span>
+        </div>
+        <button class="btn btn-ghost" type="button" id="another" style="align-self:flex-start">Present another</button>
+      </div>
+    </div>
+
+    <div id="empty">
+      <p style="color:var(--paper-72)">
+      </p>
+    </div>
+  </div>
+</section>
+
+<div id="foot"></div>
+
+<script src="/static/pqsb.js"></script>
+<script src="/static/redemption.js"></script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>i like trains 🚂</title>
+<style>
+  :root{
+    --bg:#14130e; --panel:#1d1b14; --plate:#24211a; --line:#4a463a; --rail:#39362c;
+    --rust:#d2691e; --rust2:#a84b16; --steel:#9aa0a8;
+    --green:#9fc26b; --dim:#8b8675; --hazard:#e8b923;
+    --mono:'Courier New',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; color:#e3ddcd; font-family:var(--mono);
+    background-color:var(--bg);
+    /* grimy brushed-steel base: faint vertical streaks + horizontal grease bands */
+    background-image:
+      repeating-linear-gradient(90deg, rgba(0,0,0,.22) 0 1px, transparent 1px 4px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0 2px, transparent 2px 7px);
+    overflow-x:hidden;
+  }
+  /* film of grain over everything */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  a{color:var(--rust); text-decoration:none; border-bottom:1px dotted var(--rust2)}
+  a:hover{background:var(--rust); color:#14130e; border-bottom-color:transparent}
+
+  /* hazard tape divider */
+  .hazard{height:11px; border-top:2px solid #000; border-bottom:2px solid #000;
+    background:repeating-linear-gradient(45deg,var(--hazard) 0 16px,#15130d 16px 32px)}
+
+  /* ---- header ---- */
+  header{
+    text-align:center; padding:30px 16px 16px; position:relative;
+    background:var(--plate);
+    box-shadow:inset 0 -3px 0 #000, inset 0 3px 0 rgba(255,255,255,.03);
+  }
+  /* the title IS the train: loco + smoke + waggon + coupling + [carriage of text] */
+  .consist{
+    margin:0; display:inline-flex; align-items:flex-end; gap:5px; white-space:nowrap;
+    font-size:clamp(24px,6vw,58px); letter-spacing:2px;
+    animation:driveThrough 18s cubic-bezier(.45,0,.55,1) infinite; will-change:transform;
+  }
+  .consist .loco,.consist .car{-webkit-text-stroke:0; line-height:1; filter:drop-shadow(2px 2px 0 #000)}
+  .consist .smoke{-webkit-text-stroke:0; font-size:.5em; align-self:flex-start;
+    margin:0 -6px 0 -12px; animation:puff 2.2s steps(4,end) infinite}
+  .consist .coupler{color:var(--line); align-self:center; -webkit-text-stroke:0; margin:0 -1px}
+  .wagon{
+    position:relative; color:var(--rust); padding:.16em .5em .2em;
+    background:var(--plate); border:3px solid #000; border-top-width:7px; border-radius:5px;
+    text-shadow:3px 3px 0 #000, -1px -1px 0 rgba(255,255,255,.05);
+    -webkit-text-stroke:1.5px rgba(0,0,0,.45);
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.06), inset 0 -4px 0 rgba(0,0,0,.55);
+    background-image:
+      radial-gradient(circle at 9px 9px,#000 2px,transparent 2.8px),
+      radial-gradient(circle at calc(100% - 9px) 9px,#000 2px,transparent 2.8px),
+      radial-gradient(circle at 9px calc(100% - 9px),#000 2px,transparent 2.8px),
+      radial-gradient(circle at calc(100% - 9px) calc(100% - 9px),#000 2px,transparent 2.8px);
+    background-repeat:no-repeat;
+  }
+  .wagon::after{ /* two wheels under the carriage */
+    content:""; position:absolute; left:16%; right:16%; bottom:-11px; height:12px;
+    background:
+      radial-gradient(circle at 12px 1px,#1a1a1a 5px,#4a4a4a 6px,transparent 7px),
+      radial-gradient(circle at calc(100% - 12px) 1px,#1a1a1a 5px,#4a4a4a 6px,transparent 7px);
+    background-repeat:no-repeat;
+  }
+  .tag{color:var(--dim); margin-top:14px; font-size:13px; letter-spacing:1px}
+  @keyframes puff{0%,100%{transform:translateY(0) scale(1);opacity:.85}50%{transform:translateY(-7px) scale(1.2);opacity:.35}}
+  /* parked & readable most of the cycle, then rolls off left and back in from the right (loco leads) */
+  @keyframes driveThrough{
+    0%,58%{transform:translateX(0)}
+    70%{transform:translateX(-135vw)}
+    70.01%{transform:translateX(135vw)}
+    82%,100%{transform:translateX(0)}
+  }
+  @media (prefers-reduced-motion:reduce){ .consist{animation:none} }
+
+  /* railbed + chugging train (mirrored so the loco leads) */
+  .track{
+    position:relative; height:50px; margin-top:18px; overflow:hidden;
+    background:
+      repeating-linear-gradient(90deg,#2a2720 0 5px,transparent 5px 24px), /* sleepers */
+      linear-gradient(#1a1813,#100f0b);
+    border-top:1px solid #000;
+  }
+  .track::before,.track::after{content:""; position:absolute; left:0; right:0; height:3px; background:#55504400; }
+  .track::before{bottom:14px; box-shadow:0 0 0 0 #000; background:#5a5446}
+  .track::after{bottom:24px; background:#5a5446}
+  .train{
+    position:absolute; bottom:9px; left:-240px; white-space:nowrap; font-size:30px;
+    transform:scaleX(-1); /* flip: 🚂 now faces direction of travel */
+    animation:chug 13s linear infinite; z-index:2;
+  }
+  @keyframes chug{from{left:-240px}to{left:108%}}
+
+  /* ---- stats ---- */
+  .stats{display:flex; flex-wrap:wrap; justify-content:center; gap:0; padding:0}
+  .stat{
+    background:var(--panel); border:2px solid #000; border-left-width:1px; border-right-width:1px;
+    padding:16px 26px; min-width:150px; text-align:center;
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.04), inset 0 -3px 0 rgba(0,0,0,.5);
+  }
+  .stat b{display:block; font-size:32px; color:var(--green); font-variant-numeric:tabular-nums;
+    text-shadow:1px 1px 0 #000}
+  .stat span{font-size:11px; color:var(--dim); letter-spacing:2px; text-transform:uppercase}
+
+  main{max-width:1060px; margin:0 auto; padding:8px 16px 50px}
+  section{margin-top:34px}
+  .head{display:flex; align-items:center; gap:12px; padding-bottom:8px;
+    border-bottom:3px double var(--line)}
+  .head h2{margin:0; font-size:20px; color:var(--rust); letter-spacing:2px}
+  .head .count{margin-left:auto; color:var(--dim); font-size:12px;
+    background:#000; padding:3px 9px; border:1px solid var(--line)}
+  .blurb{color:var(--dim); font-size:13px; margin:9px 0 14px; font-style:italic}
+
+  /* riveted metal plate (bolt in each corner) */
+  .plate{
+    background:var(--panel); border:2px solid var(--line); border-radius:2px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 4px 4px 0 rgba(0,0,0,.35);
+    background-image:
+      radial-gradient(circle at 8px 8px,#000 1.7px,transparent 2.4px),
+      radial-gradient(circle at calc(100% - 8px) 8px,#000 1.7px,transparent 2.4px),
+      radial-gradient(circle at 8px calc(100% - 8px),#000 1.7px,transparent 2.4px),
+      radial-gradient(circle at calc(100% - 8px) calc(100% - 8px),#000 1.7px,transparent 2.4px);
+    background-repeat:no-repeat;
+  }
+
+  .grid{display:grid; gap:12px}
+  .agencies{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  .card{padding:14px 16px}
+  .card .nm{font-weight:bold; color:#efe7d4; letter-spacing:.5px}
+  .card .sub{font-size:12px; color:var(--dim); margin-top:5px; word-break:break-all}
+
+  /* stamped luggage-tag chips */
+  .chips{display:flex; flex-wrap:wrap; gap:8px}
+  .chip{
+    background:var(--plate); border:1px solid #000; border-left:4px solid var(--rust2);
+    padding:6px 12px; font-size:14px; color:var(--green);
+    box-shadow:2px 2px 0 rgba(0,0,0,.4);
+  }
+  .chip.dest{color:#e8c27a; border-left-color:var(--hazard)}
+
+  /* station departure board */
+  .search{
+    width:100%; background:#0c0b07; border:2px solid var(--line); color:var(--green);
+    font-family:var(--mono); font-size:15px; padding:11px 14px; margin-bottom:12px; border-radius:2px;
+    box-shadow:inset 0 2px 4px rgba(0,0,0,.6);
+  }
+  .search:focus{outline:none; border-color:var(--rust)}
+  .board{background:#0a0906; overflow:hidden}
+  .row{
+    display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center;
+    padding:9px 14px; border-bottom:1px solid #18160f; font-size:14px;
+  }
+  .row:nth-child(even){background:#100e09}
+  .row .coords{color:var(--dim); font-size:12px; font-variant-numeric:tabular-nums}
+  .more{text-align:center; color:var(--dim); padding:12px; font-size:13px}
+
+  .loading{color:var(--dim); padding:14px}
+  .err{color:#e0633b; padding:14px}
+
+  /* construction sign shown when the data tracks are closed (APIs error) */
+  .signal{max-width:680px; margin:48px auto;
+    padding:14px;                                          /* hazard-tape frame thickness */
+    background:repeating-linear-gradient(45deg,var(--hazard) 0 22px,#15130d 22px 44px);
+    box-shadow:8px 8px 0 rgba(0,0,0,.45)}
+  .signal-inner{background:var(--plate); border:2px solid #000; padding:32px 26px; text-align:center}
+  .signal .ico{font-size:46px; letter-spacing:10px; filter:drop-shadow(2px 2px 0 #000)}
+  .signal h2{margin:16px 0 8px; font-size:clamp(30px,7vw,48px); letter-spacing:3px;
+    color:var(--hazard); text-transform:uppercase;
+    text-shadow:3px 3px 0 #000; -webkit-text-stroke:1.5px rgba(0,0,0,.5)}
+  .signal .sub{color:#e3ddcd; font-size:16px; letter-spacing:1px; margin:0}
+  .signal .hint{color:var(--dim); font-size:14px; margin:18px 0 0; line-height:1.6}
+  .signal code{background:#0c0b07; border:1px solid var(--line); color:var(--green);
+    padding:2px 7px; border-radius:2px}
+  .signal .barrier{margin-top:22px; border-top:4px dashed var(--hazard); opacity:.5}
+  footer{text-align:center; color:var(--dim); font-size:12px; padding:26px 16px;
+    background:var(--plate); box-shadow:inset 0 3px 0 #000}
+</style>
+</head>
+<body>
+<header>
+  <h1 class="consist"><span class="loco">🚂</span><span class="smoke">💨</span><span class="car">🚃</span><span class="coupler">–</span><span class="wagon">i like trains</span></h1>
+  <div class="tag">~ a wholly unserious departure board for people who really like trains ~</div>
+  <div class="track"><div class="train">🚂🚃🚃🚃🚃</div></div>
+</header>
+<div class="hazard"></div>
+
+<div class="stats" id="stats">
+  <div class="stat"><b id="s-ag">··</b><span>Agencies</span></div>
+  <div class="stat"><b id="s-ln">··</b><span>ICE Lines</span></div>
+  <div class="stat"><b id="s-st">··</b><span>Stations</span></div>
+  <div class="stat"><b id="s-de">··</b><span>Destinations</span></div>
+</div>
+<div class="hazard"></div>
+
+<main>
+  <div id="signal" class="signal" hidden>
+    <div class="signal-inner">
+      <div class="ico">🚧 ⚠️ 🚧</div>
+      <h2>Signalstörung</h2>
+      <p class="sub">Gleis gesperrt — the data tracks are closed.</p>
+      <p class="hint">The signalling tools aren't on board yet. Please <code>POST /install</code> (authenticated) to fetch them and re-open the line.</p>
+      <div class="barrier"></div>
+    </div>
+  </div>
+
+  <div id="content">
+  <section>
+    <div class="head"><h2>🏢 agencies</h2><span class="count" id="c-ag"></span></div>
+    <div class="blurb">~ the fine folks who keep the wheels turning (mostly on time) ~</div>
+    <div class="grid agencies" id="agencies"><div class="loading">coupling carriages…</div></div>
+  </section>
+
+  <section>
+    <div class="head"><h2>🚄 ice lines</h2><span class="count" id="c-ln"></span></div>
+    <div class="blurb">~ intercity-express, because regular intercity was simply not express enough ~</div>
+    <div class="chips" id="lines"><div class="loading">building up steam…</div></div>
+  </section>
+
+  <section>
+    <div class="head"><h2>📍 stations</h2><span class="count" id="c-st"></span></div>
+    <div class="blurb">~ every platform a tiny stage. type to find your stop ~</div>
+    <input class="search" id="search" placeholder="search stations… (e.g. Berlin, Hbf, Köln)" autocomplete="off">
+    <div class="board plate" id="stations"><div class="loading">checking the timetable…</div></div>
+    <div class="more" id="more"></div>
+  </section>
+
+  <section>
+    <div class="head"><h2>🎯 destinations</h2><span class="count" id="c-de"></span></div>
+    <div class="blurb">~ where the trains are headed. wave as they leave ~</div>
+    <div class="chips" id="destinations"><div class="loading">consulting the conductor…</div></div>
+  </section>
+  </div>
+</main>
+
+<div class="hazard"></div>
+<footer>
+  made with choo-choo enthusiasm · data via GTFS · <span id="clock"></span>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+async function getJSON(path){
+  const r = await fetch(path);
+  if(!r.ok) throw new Error(path + " → " + r.status);
+  return r.json();
+}
+
+function fail(el, e){ el.innerHTML = '<div class="err">🚧 track closed: ' + e.message + '</div>'; }
+
+// when the data APIs error (e.g. yq not installed → 500), close the line with a big sign
+let signalShown = false;
+function signalFault(){
+  if (signalShown) return; signalShown = true;
+  $('signal').hidden = false;
+  $('content').style.display = 'none';
+  $('stats').style.display = 'none';
+}
+
+// little count-up animation for the stat numbers
+function countUp(el, to){
+  const start = performance.now(), dur = 700;
+  (function step(now){
+    const p = Math.min(1,(now-start)/dur);
+    el.textContent = Math.round(to * (1-Math.pow(1-p,3)));
+    if(p<1) requestAnimationFrame(step);
+  })(performance.now());
+}
+
+// ---- Agencies ----
+getJSON('/api/agencies').then(d=>{
+  countUp($('s-ag'), d.length); $('c-ag').textContent = d.length + ' operators';
+  $('agencies').innerHTML = d.map(a=>`
+    <div class="card plate">
+      <div class="nm">${esc(a.name)}</div>
+      <div class="sub">${a.url ? `<a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.url)}</a>` : '—'}</div>
+    </div>`).join('');
+}).catch(e=>{fail($('agencies'),e); signalFault();});
+
+// ---- ICE Lines ----
+getJSON('/api/lines/ice').then(d=>{
+  countUp($('s-ln'), d.length); $('c-ln').textContent = d.length + ' lines';
+  $('lines').innerHTML = d.map(l=>`<span class="chip">🚄 ${esc(l)}</span>`).join('');
+}).catch(e=>{fail($('lines'),e); signalFault();});
+
+// ---- Destinations ----
+getJSON('/api/destinations').then(d=>{
+  countUp($('s-de'), d.length); $('c-de').textContent = d.length + ' destinations';
+  $('destinations').innerHTML = d.map(x=>`<span class="chip dest">🎯 ${esc(x)}</span>`).join('');
+}).catch(e=>{fail($('destinations'),e); signalFault();});
+
+// ---- Stations (searchable, capped render) ----
+let STATIONS = [];
+getJSON('/api/stations').then(d=>{
+  STATIONS = d;
+  countUp($('s-st'), d.length); $('c-st').textContent = d.length + ' stops';
+  renderStations('');
+}).catch(e=>{fail($('stations'),e); signalFault();});
+
+const CAP = 60;
+function renderStations(q){
+  q = q.trim().toLowerCase();
+  const matches = q ? STATIONS.filter(s => (s.name||'').toLowerCase().includes(q)) : STATIONS;
+  const shown = matches.slice(0, CAP);
+  $('stations').innerHTML = shown.length ? shown.map(s=>`
+    <div class="row">
+      <span>🚉 ${esc(s.name)}</span>
+      <span class="coords">${fmt(s.lat)}, ${fmt(s.lon)}</span>
+    </div>`).join('') : '<div class="more">no platforms match “'+esc(q)+'” 🤷</div>';
+  $('more').textContent = matches.length > shown.length
+    ? `…and ${matches.length - shown.length} more — keep typing to narrow it down` : '';
+}
+$('search').addEventListener('input', e=>renderStations(e.target.value));
+
+function fmt(v){ const n = parseFloat(v); return isNaN(n) ? '?' : n.toFixed(4); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// footer clock
+(function tick(){
+  const d = new Date();
+  $('clock').textContent = 'station time ' + d.toLocaleTimeString();
+  setTimeout(tick, 1000);
+})();
+
+// ---- animated <title>: a train drives across the browser tab, forever ----
+(function(){
+  const NB = 'ㅤ';  // U+3164 Hangul filler: blank glyph + has width + NOT whitespace (won't be trimmed; keeps title non-empty so no hostname fallback)
+  const LOCOS = ['\u{1F682}', '\u{1F684}', '\u{1F685}'];   // 🚂 loco / 🚄 high-speed / 🚅 bullet — picked fresh each entry
+  const TAIL = '🚃–[i like trains]';                       // wagon + coupling + carriage (intra-word gaps stay normal spaces)
+  let TRAIN = Array.from(LOCOS[0] + TAIL);                 // reassigned per run(); all locos are 1 code point so L is constant
+  const L = TRAIN.length;
+  const W = Math.max(28, L + 10);                         // width of the little "track" window
+  const STEP_MS = 110;                                    // time to roll one character
+  const PARK_MS = 4000;                                   // how long it sits parked & readable
+  const GAP_MS  = 1500;                                   // empty pause before it returns
+
+  const frame = pos => {                                  // render the track with the train at `pos`
+    let s = '';
+    for (let i = 0; i < W; i++){
+      const k = i - pos;
+      s += (k >= 0 && k < L) ? TRAIN[k] : NB;
+    }
+    return s;
+  };
+
+  const blank = NB.repeat(W);
+  document.title = blank;                                 // "empty" track (invisible, but not whitespace)
+
+  const EMOJI = 2;   // leading 🚂🚃 — wider than the letters; both are off-screen once pos <= -EMOJI
+
+  function run(){
+    TRAIN = Array.from(LOCOS[Math.floor(Math.random() * LOCOS.length)] + TAIL);  // random loco for this entry
+    let pos = W;                                          // start fully off the right edge
+    (function step(){
+      document.title = NB + frame(pos);   // leading NB guards the first space from being trimmed → even cadence, no jitter
+      if (pos === 0){ pos--; setTimeout(step, PARK_MS); return; }  // park, then keep rolling left
+      // once the wide emojis have rolled off the left, advance 2 narrow letters/step
+      // so the perceived speed stays constant (no monospace font in tab titles)
+      pos -= (pos <= -EMOJI) ? 2 : 1;
+      if (pos <= -L){ document.title = blank; setTimeout(run, GAP_MS); return; } // gone left → pause → loop
+      setTimeout(step, STEP_MS);
+    })();
+  }
+  run();
+})();
+</script>
+</body>
+</html>

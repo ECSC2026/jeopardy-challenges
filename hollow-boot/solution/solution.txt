@@ -1,0 +1,33 @@
+- 7z x mmcblk0.img
+- gunzip initramfs.cpio.gz && 7z x initramfs.cpio
+- cat init
+
+Reveals cryptsetup opening the root partition with a hardcoded key:
+
+KEY_LBA=34
+
+cryptsetup open --type plain \
+        --cipher aes-xts-plain64 \
+        --key-size 512 \
+        --key-file "$DISK" \
+        --keyfile-offset $(( KEY_LBA * 512 )) \
+        --keyfile-size 64 \
+        --sector-size 512 \
+        --skip 100352 \
+        --offset 100352 \
+        "$DISK" rootfs
+
+- Adapting the command:
+
+sudo cryptsetup open --type plain \
+        --cipher aes-xts-plain64 \
+        --key-size 512 \
+        --key-file mmcblk0.img \
+        --keyfile-offset 17408 \
+        --keyfile-size 64 \
+        --sector-size 512 \
+        --skip 100352 \
+        --offset 100352 \
+        mmcblk0.img rootfs
+
+Will open the device as rootfs, we can mount as normally and get the flag

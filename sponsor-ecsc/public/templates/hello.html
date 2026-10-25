@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#050b0b">
+    <title>Sponsorship Confirmed · ECSC 2026</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <div class="scanlines" aria-hidden="true"></div>
+    <nav>
+      <a class="brand" href="{{ url_for('index') }}">ECSC::2026</a>
+      <div class="nav-links" aria-hidden="true"><span>HOME</span><span class="active">SPONSORS</span><span>CONTACT</span></div>
+      <div class="online"><i></i>REGISTRATION COMPLETE</div>
+    </nav>
+
+    <main>
+      <header class="section-heading">
+        <div class="section-label"><i></i><span>SECTION::004</span></div>
+        <h1>SPONSORSHIP CONFIRMED</h1>
+        <p>Your selected partnership tier has been registered successfully.</p>
+      </header>
+
+      <section class="confirmation-grid">
+        <article class="card featured corner-brackets confirmation-card">
+          <header class="card-header"><div><span class="icon">✦</span><b>ACTIVE SPONSORSHIP</b></div><small>confirmed</small></header>
+          <div class="card-title tier-name">{{ sponsortier }}</div>
+          <div class="card-content grow">
+            <div class="micro-heading">REGISTRATION STATUS:</div>
+            <ul>
+              <li><span>▸</span>Tier selection recorded</li>
+              <li><span>▸</span>Sponsor credential issued</li>
+              <li><span>▸</span>Partner access enabled</li>
+            </ul>
+            <div class="status-pill"><i></i> SPONSOR ACTIVE</div>
+            <div class="card-actions">
+              <a class="button secondary-action" href="{{ url_for('index') }}">VIEW ALL TIERS</a>
+              <a
+                class="button flag-action{% if sponsortier != 'flag' %} disabled{% endif %}"
+                href="{{ url_for('flag') }}"
+                {% if sponsortier != 'flag' %}aria-disabled="true" tabindex="-1"{% endif %}
+              >VIEW FLAG</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card summary-card">
+          <header class="card-header"><div><span class="icon">◇</span><b>REGISTRATION</b></div><small>ref 84-07</small></header>
+          <dl class="summary-list">
+            <div><dt>Selected tier</dt><dd>{{ sponsortier }}</dd></div>
+            <div><dt>Status</dt><dd class="cyan">ACTIVE</dd></div>
+            <div><dt>Event</dt><dd>ECSC::2026</dd></div>
+            <div><dt>Access</dt><dd>STANDARD</dd></div>
+          </dl>
+        </article>
+      </section>
+    </main>
+
+    <footer><span>ECSC::2026 // PARTNERSHIPS</span><span>REGISTRATION_CONFIRMED</span></footer>
+  </body>
+</html>
